@@ -1,0 +1,10 @@
+Django>=5.0,<6.0
+djangorestframework
+djangorestframework-simplejwt
+psycopg[binary]
+django-environ
+celery
+redis
+gunicorn
+pytest
+pytest-django
