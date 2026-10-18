@@ -6,6 +6,8 @@ User = get_user_model()
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    # write_only: a senha é aceita na entrada, mas nunca aparece na resposta
+    # validate_password: aplica as regras de senha do Django
     password = serializers.CharField(write_only=True, validators=[validate_password])
 
     class Meta:

@@ -5,6 +5,7 @@ from links.views import redirect_to_original
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/auth/", include("accounts.urls")), 
     path("api/", include("links.urls")),
     path("<str:code>/", redirect_to_original, name="redirect"),
 ]

@@ -7,8 +7,13 @@ from .serializers import LinkSerializer
 
 
 class LinkListCreateView(generics.ListCreateAPIView):
-    queryset = Link.objects.all()
     serializer_class = LinkSerializer
+
+    def get_queryset(self): # Cada usuário enxerga apenas os próprios links
+        return Link.objects.filter(owner=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 def redirect_to_original(request, code):

@@ -10,12 +10,11 @@ class Link(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="links",
-        null=True,
-        blank=True,
     )
+        
     original_url = models.URLField(max_length=2048)
     code = models.CharField(max_length=10, unique=True, db_index=True, blank=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True) # permite desativar sem apagar
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField(null=True, blank=True)
 
@@ -25,7 +24,7 @@ class Link(models.Model):
     def __str__(self):
         return f"{self.code} -> {self.original_url}"
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs): # Antes de salvar, gera o código curto se o link ainda não tiver um
         if not self.code:
             self.code = self._unique_code()
         super().save(*args, **kwargs)
@@ -42,7 +41,7 @@ class Link(models.Model):
         return self.expires_at is not None and self.expires_at <= timezone.now()
 
 
-class Click(models.Model):
+class Click(models.Model): # Registro de cada acesso a um link (usado nas estatísticas)
     link = models.ForeignKey(Link, on_delete=models.CASCADE, related_name="clicks")
     clicked_at = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True, blank=True)
