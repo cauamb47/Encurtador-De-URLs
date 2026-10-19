@@ -142,3 +142,15 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
 }
+
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": env("CACHE_URL"),
+    }
+}
+
+# Fila do Celery: o Redis guarda as tarefas até o worker executá-las
+CELERY_BROKER_URL = env("REDIS_URL")
