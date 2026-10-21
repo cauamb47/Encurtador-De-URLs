@@ -2,6 +2,10 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
+from django.core.cache import cache
+from django.db.models.signals import post_delete, post_save
+from django.dispatch import receiver
+
 from .utils import generate_code
 
 
@@ -39,6 +43,12 @@ class Link(models.Model):
     @property
     def is_expired(self) -> bool:
         return self.expires_at is not None and self.expires_at <= timezone.now()
+
+    # Signal: roda automaticamente depois de salvar ou apagar um Link.
+    # Remove a entrada do cache para o redirecionamento nunca usar dados desatualizados.
+    @receiver([post_save, post_delete], sender=Link)
+    def invalidate_link_cache(sender, instance, **kwargs):
+        cache.delete(f"link:{instance.code}")
 
 
 class Click(models.Model): # Registro de cada acesso a um link (usado nas estatísticas)
