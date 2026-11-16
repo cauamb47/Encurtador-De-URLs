@@ -44,7 +44,7 @@ class Link(models.Model):
     def is_expired(self) -> bool:
         return self.expires_at is not None and self.expires_at <= timezone.now()
 
-# Signal: roda automaticamente depois de salvar ou apagar um Link.
+# roda automaticamente depois de salvar ou apagar um Link.
 # Remove a entrada do cache para o redirecionamento nunca usar dados desatualizados.
 @receiver([post_save, post_delete], sender=Link)
 def invalidate_link_cache(sender, instance, **kwargs):
@@ -56,6 +56,7 @@ class Click(models.Model): # Registro de cada acesso a um link (usado nas estatÃ
     clicked_at = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True, blank=True)
     user_agent = models.CharField(max_length=512, blank=True)
+    browser = models.CharField(max_length=30, blank=True, default="")  # Chrome, Firefox etc.
     referer = models.CharField(max_length=2048, blank=True)
 
     class Meta:
